@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Employee{% endblock %}
+
+{% block content %}
+    <h1>Add Employee</h1>
+
+    {{ include('employee/_form.html.twig') }}
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('datepicker') }}
+{% endblock %}

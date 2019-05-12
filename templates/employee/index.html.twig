@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employee index{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xl-auto">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> List of Employee</div>
+                <div class="card-body">
+                    <table class="table table-responsive table-striped table-bordered table-responsive-lg">
+                        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Image</th>
+                <th>Note</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for employee in employees %}
+            <tr>
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.name }}</td>
+                <td>{{ age_list[employee.id] }}</td>
+                <td>{{ genders[employee.gender] }}</td>
+                <td><img src="{{ asset('uploads') }}/{{ employee.image }}" width="50px" height="5npm0px" class="img-thumbnail"/> </td>
+                <td>{{ employee.note }}</td>
+                <td>
+                    <a href="{{ path('employee_show', {'id': employee.id}) }}">show</a>
+                    <a href="{{ path('employee_edit', {'id': employee.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('employee_new') }}" class="btn btn-primary">Add</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

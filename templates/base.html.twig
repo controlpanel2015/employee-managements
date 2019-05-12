@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+
+        {% endblock %}
+    </head>
+    <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+
+        {% block body %}
+            {% block header %}
+                {% if app.user %}
+                    {% include 'layout-components/header.html.twig' %}
+                {% endif %}
+            {% endblock %}
+        <div class="app-body">
+            {% block menu %}
+                {% if app.user %}
+                    {% include 'layout-components/menu.html.twig' %}
+                {% endif %}
+            {% endblock %}
+        {% endblock %}
+        <main class="main">
+            <div class="container-fluid">
+                <div class="animated fadeIn">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </main>
+        </div>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+    {% block footer %}
+        {% include 'layout-components/footer.html.twig' %}
+    {% endblock %}
+</html>
