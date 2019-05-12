@@ -7,6 +7,7 @@ use App\Form\EmployeeType;
 use App\Repository\EmployeeRepository;
 use App\Service\AgeCalculator;
 use App\Service\FileUploader;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class EmployeeController extends AbstractController
 {
     /**
+     *
      * @Route("/", name="employee_index", methods={"GET"})
      */
     public function index(EmployeeRepository $employeeRepository,AgeCalculator $ageCalculator,Request $request): Response
@@ -76,6 +78,7 @@ class EmployeeController extends AbstractController
     }*/
 
     /**
+     *
      * @Route("/new", name="employee_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
@@ -88,7 +91,7 @@ class EmployeeController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($employee);
             $entityManager->flush();
-
+            $this->addFlash('success',"Data has been added sucessfully");
             return $this->redirectToRoute('employee_index');
         }
 
