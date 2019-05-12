@@ -20,9 +20,24 @@ class EmployeeController extends AbstractController
     /**
      * @Route("/", name="employee_index", methods={"GET"})
      */
-    public function index(EmployeeRepository $employeeRepository,AgeCalculator $ageCalculator): Response
+    public function index(EmployeeRepository $employeeRepository,AgeCalculator $ageCalculator,Request $request): Response
     {
-        $employees= $employeeRepository->findAll();
+        $search_name=$request->query->get('name');
+        $search_age=$request->query->get('age');
+        $date_of_birth=null;
+        if($search_age>0){
+            $date_of_birth=new \DateTime(date('Y-m-d',strtotime("-".$search_age." year ".date('Y-m-d'))));
+        }
+        if($search_name!='' &&$date_of_birth!=null){
+            $employees=$employeeRepository->findBy(['name'=>$search_name,'date_of_birth'=>$date_of_birth]);
+        }else if($search_name!='' &&$date_of_birth==null){
+            $employees=$employeeRepository->findBy(['name'=>$search_name]);
+        }else if($search_name=='' && $date_of_birth!=null){
+            $employees=$employeeRepository->findBy(['date_of_birth'=>$date_of_birth]);
+        }else{
+            $employees= $employeeRepository->findAll();
+        }
+
         $age_list=[];
         $genders=['M'=>"Male",'F'=>"Female",'O'=>"Others"];
         foreach ($employees as $employee){
@@ -31,7 +46,7 @@ class EmployeeController extends AbstractController
         //$gender_wise_employee_list=$employeeRepository->getGenderWiseEmployee();
        //dump($gender_wise_employee_list);
         return $this->render('employee/index.html.twig', [
-            'employees'=>$employees,'age_list'=>$age_list,'genders'=>$genders
+            'employees'=>$employees,'age_list'=>$age_list,'genders'=>$genders,'name'=>$search_name,'age'=>$search_age
         ]);
     }
     /*public function index(EmployeeRepository $employeeRepository,AgeCalculator $ageCalculator): Response
