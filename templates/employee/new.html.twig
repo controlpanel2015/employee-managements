@@ -10,5 +10,6 @@
 
 {% endblock %}
 {% block javascripts %}
-    {{ encore_entry_script_tags('datepicker') }}
+    {{ parent() }}
+    {{  encore_entry_script_tags('datepicker') }}
 {% endblock %}

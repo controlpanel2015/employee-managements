@@ -6,8 +6,7 @@ use App\Entity\Employee;
 use App\Form\EmployeeType;
 use App\Repository\EmployeeRepository;
 use App\Service\AgeCalculator;
-use App\Service\FileUploader;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class EmployeeController extends AbstractController
 {
+
     /**
      *
      * @Route("/", name="employee_index", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN')")
+     * @throws \Exception
      */
     public function index(EmployeeRepository $employeeRepository,AgeCalculator $ageCalculator,Request $request): Response
     {
@@ -114,7 +116,7 @@ class EmployeeController extends AbstractController
     /**
      * @Route("/{id}/edit", name="employee_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Employee $employee,FileUploader $fileUploader): Response
+    public function edit(Request $request, Employee $employee): Response
     {
         $form = $this->createForm(EmployeeType::class, $employee);
         $form->handleRequest($request);
@@ -148,13 +150,16 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Route("/report/{employee}", name="report_index", methods={"GET"})
+     *
+     * @Route("/report", name="employee_report", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN')")
+     * @throws \Exception
      */
-    public function gender_wise_employee_list(EmployeeRepository $employeeRepository): Response
+    public function showReport(): Response
     {
-        $employees= $employeeRepository->getGenderWiseEmployee();
+        //$employees= $employeeRepository->getGenderWiseEmployee();
         return $this->render('employee/report.html.twig', [
-            'employee_list'=>$employees
+            'employee_list'=>[]
         ]);
     }
 }
