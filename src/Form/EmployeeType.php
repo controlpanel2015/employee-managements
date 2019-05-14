@@ -21,7 +21,8 @@ class EmployeeType extends AbstractType
                     'label'=>"Date of Birth",
                     'widget'=>"single_text",
                     'attr'=>[
-                        'class'=>"datepicker"
+                        'class'=>"datepicker ",
+                        'id'=>"sandbox-container"
                     ],])
             ->add('gender',ChoiceType::class,[
                 'choices'=>[

@@ -14,49 +14,54 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class EmployeeRepository extends ServiceEntityRepository
 {
+    const GENDER_MAP = ['M' => "Male", "F" => "Female", "O" => "Others"];
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Employee::class);
     }
 
-    // /**
-    //  * @return Employee[] Returns an array of Employee objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getGenderWiseEmployee()
     {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Employee
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-    public function getGenderWiseEmployee(){
-        return $this->createQueryBuilder('e')->select("count(id) as no_of_employee,if(gender='M','Male',if(gender='F','Female','Other')) as gender")
+        $data = $this
+            ->createQueryBuilder('e')
+            ->select("count(e.id) as no_of_employee, e.gender")
             ->groupBy("e.gender")
             ->getQuery()
             ->getResult();
-        /*
-        $conn=$this->getEntityManager()->getConnection();
-        $sql="SELECT count(id) as no_of_employee,if(gender='M','Male',if(gender='F','Female','Other')) as gender FROM employee group by gender";
-        $stmt= $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();*/
+
+        $report = [];
+
+        foreach ($data as $row) {
+
+            $report[] = [
+                'gender' => self::GENDER_MAP[$row['gender']],
+                'no_of_employee' => $row['no_of_employee'],
+            ];
+        }
+
+        return $report;
+    }
+
+    public function getQueryBySearchCriteria(array $searchCriteria)
+    {
+        $qb = $this
+            ->createQueryBuilder('e');
+
+        if(isset($searchCriteria['name']) && !empty(trim($searchCriteria['name']))) {
+            $qb
+                ->where($qb->expr()->like('e.name', ':name'))
+                ->setParameter('name', $searchCriteria['name']);
+            ;
+        }
+
+        if(isset($searchCriteria['age']) && !empty(trim($searchCriteria['age']))) {
+            $qb
+                ->where("e.date_of_birth = DATE_ADD(CURRENT_DATE(),:age, 'year')")
+                ->setParameter(age,$searchCriteria['age']);
+        }
+
+        return $qb->getQuery();
     }
 }
+
